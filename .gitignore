@@ -2,3 +2,4 @@
 .portal/
 .nrepl-port
 basic-boggle.iml
+.cpcache
