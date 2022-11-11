@@ -1,10 +1,6 @@
 (ns boggle.core
   (:require [portal.api :as p]))
 
-(defn prepare-portal []
-  (p/open {:launcher :intellij})
-  (add-tap #'p/submit))
-
 ;; Matrix utils
 (defn build-visited-matrix
   "Build a matrix with same size of the board fulfilled with `false` values.
@@ -78,8 +74,8 @@
             second-visited? (-> visited-matrix
                                 (get x2)
                                 (get y2)
-                                not) ]
-       (and first-visited? second-visited?)))
+                                not)]
+        (and first-visited? second-visited?)))
     match-cases))
 
 (defn word-exists? [board word]
@@ -103,8 +99,8 @@
           ))
       false)))
 
-(defn execute [{:keys  [input output]
-                   :as case}]
+(defn execute [{:keys [input output]
+                :as   case}]
   (let [{:keys [board word]} input
         result (word-exists? board word)
         op-result (merge case
@@ -125,6 +121,14 @@
 (defn run-all-samples []
   (->> (load-samples)
        (map execute)))
+
+(defn -main [run-type & _]
+  (let [result (cond
+                 (= run-type "all") (run-all-samples)
+                 (Character/isDigit (char run-type)) (run-sample (.parseInt run-type)))]
+    (p/open)
+    (add-tap #'p/submit)
+    (tap> result)))
 
 (comment
 
